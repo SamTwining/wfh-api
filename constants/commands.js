@@ -5,5 +5,8 @@ module.exports = keyMirror({
   wfh: null,
   wfo: null,
   wfhtest: null,
-  wfotest: null
+  wfotest: null,
+  ooo: null,
+  vacation: null,
+  sick: null
 });

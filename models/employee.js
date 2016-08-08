@@ -178,7 +178,9 @@ internals.Employee.setDefaultStatusBasedOnTime = function(employee, overrideCurr
   } else {
     employee.statusExpired = true;
     //any expired statuses set default.
-    employee.status = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
+    if(config.rolloverExemptStatuses.indexOf(employee.status) === -1) {
+      employee.status = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
+    }
     return employee;
   }
 

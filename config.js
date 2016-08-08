@@ -7,6 +7,7 @@ module.exports = {
   allowDefaults: false,
   defaultStatus: statuses.OutOfOffice, 
   onlyAllowMessageCommand: true,
+  rolloverExemptStatuses: [statuses.Vacation, statuses.Sick],
   port: getEnv.int('PORT', 3000),
   couchDb:{
     username: getEnv('COUCHDB_USERNAME', ''),

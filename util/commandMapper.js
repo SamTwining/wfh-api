@@ -16,6 +16,12 @@ module.exports = internals.commands = function(command) {
     return statuses.InOffice;
   case commands.wfhtest:
     return statuses.WFH;
+  case commands.vacation:
+    return statuses.Vacation;
+  case commands.ooo:
+    return statuses.OutOfOffice;
+  case commands.sick:
+    return statuses.Sick;
   default:
     return statuses.InOffice;
   }
