@@ -5,20 +5,22 @@ const moment = require('moment');
 
 const Employee = require('../models/employee');
 const statuses = require('../constants/statuses');
+const config = require('../config.js');
 
 describe('Employee', function() {
 
   describe('Default status', function() {
 
-    it('should equal default (InOffice) status when date modified is for previous day', function() {
+    it('should equal default status when date modified is for previous day', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
         status: statuses.OutOfOffice,
         dateModified: moment().hours(14).subtract(1, 'days'),
         defaultStatus: statuses.InOffice
       }, moment().hours(13));
-
-      expect(employee.status).to.equal(statuses.InOffice);
+      
+      let expectedStatus = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
+      expect(employee.status).to.equal(expectedStatus);
     });
 
     it('should equal status (OutOfOffice) when last updated is on or after 8pm', function() {
@@ -35,7 +37,7 @@ describe('Employee', function() {
       expect(employee.status).to.equal(statuses.OutOfOffice);
     });
 
-    it('should equal status (OutOfOffice) set when last updated is after 8pm and current time 9am the next day', function() {
+    it('should equal status set when last updated is after 8pm and current time 9am the next day', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
         status: statuses.OutOfOffice,
@@ -47,7 +49,7 @@ describe('Employee', function() {
       expect(employee.status).to.equal(statuses.OutOfOffice);
     });
 
-    it('should equal default (InOffice) status set when last updated before 8pm', function() {
+    it('should equal default status set when last updated before 8pm', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
         status: statuses.OutOfOffice,
@@ -58,10 +60,11 @@ describe('Employee', function() {
         defaultStatus: statuses.InOffice
       }, moment().hours(13));
 
-      expect(employee.status).to.equal(statuses.InOffice);
+      let expectedStatus = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
+      expect(employee.status).to.equal(expectedStatus);
     });
 
-    it('should equal default (InOffice) status when last updated is on or after 8pm more than 2 days ago', function() {
+    it('should equal default status when last updated is on or after 8pm more than 2 days ago', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
         status: statuses.OutOfOffice,
@@ -72,10 +75,11 @@ describe('Employee', function() {
         defaultStatus: statuses.InOffice
       }, moment().hours(13));
 
-      expect(employee.status).to.equal(statuses.InOffice);
+      let expectedStatus = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
+      expect(employee.status).to.equal(expectedStatus);
     });
 
-    it('should equal default (InOffice) status when last updated is on or after 8pm more than 2 days ago, even if sick', function() {
+    it('should equal default status when last updated is on or after 8pm more than 2 days ago, even if sick', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
         status: statuses.Sick,
@@ -85,14 +89,14 @@ describe('Employee', function() {
         }).subtract(2, 'days'),
         defaultStatus: statuses.InOffice
       }, moment().hours(13));
-
-      expect(employee.status).to.equal(statuses.InOffice);
+      let expectedStatus = config.rolloverExemptStatuses.indexOf(statuses.Sick) === -1 ? employee.defaultStatus : statuses.Sick;
+      expect(employee.status).to.equal(expectedStatus);
     });
 
-    it('should equal default (InOffice) status when last updated is on or after 8pm more than 2 days ago, even if on Holiday', function() {
+    it('should equal default status when last updated is on or after 8pm more than 2 days ago, even if on Vacation', function() {
 
       const employee = Employee.setDefaultStatusBasedOnTime({
-        status: statuses.Holiday,
+        status: statuses.Vacation,
         dateModified: moment().set({
           hours:19,
           minutes:30
@@ -100,7 +104,8 @@ describe('Employee', function() {
         defaultStatus: statuses.InOffice
       }, moment().hours(13));
 
-      expect(employee.status).to.equal(statuses.InOffice);
+      let expectedStatus = config.rolloverExemptStatuses.indexOf(statuses.Vacation) === -1 ? employee.defaultStatus : statuses.Vacation;
+      expect(employee.status).to.equal(expectedStatus);
     });
 
   });
