@@ -125,7 +125,7 @@ internals.Employee.isValidStatus = function(status) {
   return !!statuses[status];
 };
 
-internals.Employee.updateStatus = function(email, status, command) {
+internals.Employee.updateStatus = function(email, profileName, status, command) {
   return internals.Employee.getByEmail(email)
     .then((employee) => {
 
@@ -133,7 +133,8 @@ internals.Employee.updateStatus = function(email, status, command) {
         var attr = {
           status: status,
           dateModified: new Date(),
-          message: ''
+          message: '',
+          name: profileName
         };
 
         if (command && !config.onlyAllowMessageCommand && !!commandTypes[command.commandType]) {

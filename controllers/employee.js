@@ -140,7 +140,7 @@ module.exports.slackHook = function(request, reply) {
             .save();
 
           } else {
-            return Employee.updateStatus(employee.email, status, command);
+            return Employee.updateStatus(employee.email, profile.realName, status, command);
           }
         })
         .then((employee) => {
