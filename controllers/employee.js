@@ -115,7 +115,12 @@ module.exports.slackHook = function(request, reply) {
 
   const slashCommand = payload.command.substr('1');
   const status = commandMapper(slashCommand);
-  const command = commandParser(payload.text);
+  var command;
+  if(!config.onlyAllowMessageCommand) {
+    command = commandParser(payload.text);
+  } else {
+    command = payload.text;
+  }
 
   slack.getUserInfo(payload.user_id)
     .then((result) => {
@@ -135,12 +140,11 @@ module.exports.slackHook = function(request, reply) {
             .save();
 
           } else {
-
             return Employee.updateStatus(employee.email, status, command);
           }
         })
         .then((employee) => {
-          reply(`Updated status to ${employee.status}, your default status is: ${employee.defaultStatus}, to change your default status use \`/${slashCommand} default:(wfo|wfh) \``);
+          reply(`Updated status to ${employee.status}`);
           logEvent(employee);
         });
 

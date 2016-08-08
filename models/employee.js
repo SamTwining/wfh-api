@@ -6,6 +6,7 @@ const moment = require('moment');
 const statuses = require('../constants/statuses');
 const commandTypes = require('../constants/commandTypes');
 const logEvent = require('../util/logEvent');
+const config = require('../config.js');
 var internals = {};
 
 const TYPE = 'Employee';
@@ -129,16 +130,14 @@ internals.Employee.updateStatus = function(email, status, command) {
     .then((employee) => {
 
       if (employee) {
-
         var attr = {
           status: status,
           dateModified: new Date(),
           message: ''
         };
 
-        if (command && !!commandTypes[command.commandType]) {
-
-          if (command.commandType === commandTypes.default && internals.Employee.isValidStatus(command.value)) {
+        if (command && !config.onlyAllowMessageCommand && !!commandTypes[command.commandType]) {
+          if (command.commandType === commandTypes.default && config.allowDefaults && internals.Employee.isValidStatus(command.value)) {
 
             attr.defaultStatus = command.value;
           }
@@ -146,7 +145,9 @@ internals.Employee.updateStatus = function(email, status, command) {
           if (command.commandType === commandTypes.message) {
             attr.message = command.value;
           }
-        }
+        } else if (command && config.onlyAllowMessageCommand) {
+	  attr.message = command;
+	}
 
         return internals.Employee.update(employee, attr)
           .then(internals.Employee.appendStatus);
@@ -176,7 +177,7 @@ internals.Employee.setDefaultStatusBasedOnTime = function(employee, overrideCurr
   } else {
     employee.statusExpired = true;
     //any expired statuses set default.
-    employee.status = employee.defaultStatus;
+    employee.status = config.allowDefaults ? employee.defaultStatus : config.defaultStatus;
     return employee;
   }
 

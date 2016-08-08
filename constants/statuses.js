@@ -6,5 +6,6 @@ module.exports = keyMirror({
   InOffice: null,
   OutOfOffice: null,
   Sick: null,
-  Holiday: null
+  Holiday: null,
+  WFH: null
 });

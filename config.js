@@ -1,8 +1,12 @@
 'use strict';
 var getEnv = require('getenv');
 var path = require('path');
+var statuses = require('./constants/statuses.js');
 
 module.exports = {
+  allowDefaults: false,
+  defaultStatus: statuses.OutOfOffice, 
+  onlyAllowMessageCommand: true,
   port: getEnv.int('PORT', 3000),
   couchDb:{
     username: getEnv('COUCHDB_USERNAME', ''),
