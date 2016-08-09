@@ -88,7 +88,7 @@ internals.Employee.batchUpdate = function(employees) {
 
   employees.forEach(employee => {
     logEvent(employee);
-    internals.Employee.updateStatus(employee.email, employee.status)
+    internals.Employee.updateStatus(employee.email, employee.name, employee.status)
       .then(() => {
         console.log(`Updated ${employee.name} status:${employee.status} in background`);
       })
