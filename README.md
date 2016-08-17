@@ -1,4 +1,4 @@
-# WFH API 
+# WFH API [![Build Status](https://travis-ci.org/SamTwining/wfh-api.svg?branch=master)](https://travis-ci.org/SamTwining/wfh-api)
 ### What is this?
 At [pebble {code}][1] we have a remote working policy, so to help find out who is working where we created a system to show the list of workers and their status. For more details see our [blogpost](http://pebblecode.com/blog/november-wfh-slack/) Do you also work in a remote workplace? If you're using Slack you can easily deploy your own, and even start building things with the api. We have two services connecting to our api, one to send a summary email every weekday at 10am and another that pulls sickness and holiday information from our HR system.
 
